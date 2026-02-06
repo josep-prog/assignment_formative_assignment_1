@@ -291,7 +291,6 @@ class _DashboardPageState extends State<DashboardPage> {
                   // Today's Classes Section: White box containing Assignments
                   Container(
                     width: double.infinity,
-                    constraints: const BoxConstraints(minHeight: 400),
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: Colors.white,
