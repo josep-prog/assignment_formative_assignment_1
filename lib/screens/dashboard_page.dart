@@ -22,9 +22,6 @@ class _DashboardPageState extends State<DashboardPage> {
   late Map<String, Map<String, dynamic>> courseData;
   late String selectedCourse;
 
-  // Track which assignment items are expanded
-  Set<String> expandedAssignments = {};
-
   @override
   void initState() {
     super.initState();
@@ -110,18 +107,6 @@ class _DashboardPageState extends State<DashboardPage> {
         courseData[selectedCourse]?['assignments'] ?? [],
       );
     }
-  }
-
-  // Helper method to get course name from assignment title
-  String _getCourseName(String assignmentTitle) {
-    if (assignmentTitle.contains('Quiz')) {
-      return 'Introduction to Linux';
-    } else if (assignmentTitle.contains('Assignment')) {
-      return 'Introduction to Python Programming';
-    } else if (assignmentTitle.contains('Project')) {
-      return 'Front End Web Development';
-    }
-    return 'Unknown Course';
   }
 
   @override
@@ -303,21 +288,11 @@ class _DashboardPageState extends State<DashboardPage> {
 
                   const SizedBox(height: 30),
 
-                  // Today's Task subtitle
-                  const Text(
-                    'Today\'s Task',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Assignments Section: White box containing Assignments
+                  // Today's Classes Section: White box containing Assignments
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    width: double.infinity,
+                    constraints: const BoxConstraints(minHeight: 400),
+                    padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
@@ -325,240 +300,69 @@ class _DashboardPageState extends State<DashboardPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Header Row: Assignments
+                        // Header: Today's Classes
                         const Text(
-                          'Assignments',
+                          'Today\'s Classes',
                           style: TextStyle(
-                            fontSize: 13,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Colors.black87,
                           ),
                         ),
 
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
 
-                        // Assignments Items for selected course with expandable dropdown
+                        // ASSIGNMENT link
+                        GestureDetector(
+                          onTap: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('View all assignments'),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'ASSIGNMENT >',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[600],
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 28),
+
+                        // Simple List of Assignments without dropdowns
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ...currentAssignments.map((assignment) {
-                              final assignmentKey = assignment['title']!;
-                              final isExpanded = expandedAssignments.contains(
-                                assignmentKey,
-                              );
-
                               return Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[100],
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      // Header - Clickable to expand/collapse
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            if (isExpanded) {
-                                              expandedAssignments.remove(
-                                                assignmentKey,
-                                              );
-                                            } else {
-                                              expandedAssignments.add(
-                                                assignmentKey,
-                                              );
-                                            }
-                                          });
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      assignment['title']!,
-                                                      style: const TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.black87,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 4),
-                                                    Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.calendar_today,
-                                                          size: 12,
-                                                          color:
-                                                              Colors.grey[600],
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 4,
-                                                        ),
-                                                        Text(
-                                                          assignment['dueDate']!,
-                                                          style: TextStyle(
-                                                            fontSize: 11,
-                                                            color: Colors
-                                                                .grey[600],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Icon(
-                                                isExpanded
-                                                    ? Icons.keyboard_arrow_up
-                                                    : Icons.keyboard_arrow_down,
-                                                color: Colors.grey[600],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                padding: const EdgeInsets.only(bottom: 28),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Assignment Title (Bold)
+                                    Text(
+                                      assignment['title']!,
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
                                       ),
-
-                                      // Expanded Content
-                                      if (isExpanded)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 8,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              top: BorderSide(
-                                                color: Colors.grey[300]!,
-                                              ),
-                                            ),
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              // Details section
-                                              Text(
-                                                'Details',
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.grey[700],
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Text(
-                                                'Course: ${_getCourseName(assignment['title']!)}',
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: Colors.grey[600],
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                'Type: Assignment',
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: Colors.grey[600],
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                'Status: Pending',
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: Colors.grey[600],
-                                                ),
-                                              ),
-                                              const SizedBox(height: 12),
-                                              // Action buttons
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: ElevatedButton(
-                                                      style: ElevatedButton.styleFrom(
-                                                        backgroundColor:
-                                                            const Color(
-                                                              0xFF0066cc,
-                                                            ),
-                                                        padding:
-                                                            const EdgeInsets.symmetric(
-                                                              vertical: 8,
-                                                            ),
-                                                      ),
-                                                      onPressed: () {
-                                                        ScaffoldMessenger.of(
-                                                          context,
-                                                        ).showSnackBar(
-                                                          SnackBar(
-                                                            content: Text(
-                                                              'Opening ${assignment['title']}',
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: const Text(
-                                                        'View',
-                                                        style: TextStyle(
-                                                          fontSize: 11,
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Expanded(
-                                                    child: OutlinedButton(
-                                                      style: OutlinedButton.styleFrom(
-                                                        side: const BorderSide(
-                                                          color: Color(
-                                                            0xFF0066cc,
-                                                          ),
-                                                        ),
-                                                        padding:
-                                                            const EdgeInsets.symmetric(
-                                                              vertical: 8,
-                                                            ),
-                                                      ),
-                                                      onPressed: () {
-                                                        ScaffoldMessenger.of(
-                                                          context,
-                                                        ).showSnackBar(
-                                                          SnackBar(
-                                                            content: Text(
-                                                              'Submitted ${assignment['title']}',
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: const Text(
-                                                        'Submit',
-                                                        style: TextStyle(
-                                                          fontSize: 11,
-                                                          color: Color(
-                                                            0xFF0066cc,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                    ],
-                                  ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    // Due Date (without icon)
+                                    Text(
+                                      assignment['dueDate']!,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               );
                             }).toList(),
@@ -568,24 +372,6 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                   ),
                 ],
-              ),
-            ),
-          ),
-
-          // Floating Scroll Down Indicator at the bottom right
-          Positioned(
-            bottom: 100,
-            right: 20,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
-                shape: BoxShape.circle,
-              ),
-              padding: const EdgeInsets.all(8),
-              child: const Icon(
-                Icons.keyboard_arrow_down,
-                color: Color(0xFF000d26),
-                size: 28,
               ),
             ),
           ),
@@ -638,8 +424,6 @@ class _MetricCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Icon(icon, color: const Color(0xFFFFD700), size: 32),
-            const SizedBox(height: 8),
             Text(
               value,
               style: const TextStyle(
