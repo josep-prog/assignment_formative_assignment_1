@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dashboard_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -68,21 +69,15 @@ class _LoginPageState extends State<LoginPage> {
         .map((entry) => entry.key)
         .toList();
 
-    // Display success message (in a real app, this would save to a database)
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Welcome! You registered with ${emailController.text} and selected ${selected.length} courses.',
+    // Navigate to Dashboard on successful registration
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => DashboardPage(
+          email: emailController.text,
+          selectedCourses: selected,
         ),
       ),
     );
-
-    // Clear fields after successful registration
-    emailController.clear();
-    passwordController.clear();
-    setState(() {
-      selectedCourses.updateAll((key, value) => false);
-    });
   }
 
   @override
