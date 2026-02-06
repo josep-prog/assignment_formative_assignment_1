@@ -22,6 +22,9 @@ class _DashboardPageState extends State<DashboardPage> {
   late Map<String, Map<String, dynamic>> courseData;
   late String selectedCourse;
 
+  // Track whether to show classes or assignments
+  bool showAssignments = false;
+
   @override
   void initState() {
     super.initState();
@@ -298,25 +301,34 @@ class _DashboardPageState extends State<DashboardPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Header Row: Today's Classes and ASSIGNMENT
+                        // Header Row: Today's Classes and toggle button for ASSIGNMENT
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              'Today\'s Classes',
-                              style: TextStyle(
+                            Text(
+                              showAssignments
+                                  ? 'Assignments'
+                                  : 'Today\'s Classes',
+                              style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black87,
                               ),
                             ),
-                            Text(
-                              'ASSIGNMENT >',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[600],
-                                letterSpacing: 0.5,
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  showAssignments = !showAssignments;
+                                });
+                              },
+                              child: Text(
+                                showAssignments ? 'CLASSES >' : 'ASSIGNMENT >',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF0066cc),
+                                  letterSpacing: 0.5,
+                                ),
                               ),
                             ),
                           ],
@@ -324,64 +336,136 @@ class _DashboardPageState extends State<DashboardPage> {
 
                         const SizedBox(height: 16),
 
-                        // Items Section - displays both classes and assignments
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Classes Items for selected course
-                            ...currentClasses.map((classItem) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Text(
-                                  classItem['title']!,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black87,
+                        // Items Section - displays classes or assignments based on toggle
+                        if (!showAssignments)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Classes Items for selected course
+                              ...currentClasses.map((classItem) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[100],
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          classItem['title']!,
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.access_time,
+                                              size: 12,
+                                              color: Colors.grey[600],
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              classItem['time']!,
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: Colors.grey[600],
+                                              ),
+                                            ),
+                                            const SizedBox(width: 12),
+                                            Icon(
+                                              Icons.location_on,
+                                              size: 12,
+                                              color: Colors.grey[600],
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              classItem['location']!,
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: Colors.grey[600],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            }),
-
-                            // Assignments Items for selected course
-                            ...currentAssignments.map((assignment) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Tapped: ${assignment['title']}',
+                                );
+                              }).toList(),
+                            ],
+                          )
+                        else
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Assignments Items for selected course
+                              ...currentAssignments.map((assignment) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Opening: ${assignment['title']}',
+                                          ),
                                         ),
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[100],
+                                        borderRadius: BorderRadius.circular(6),
                                       ),
-                                    );
-                                  },
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        assignment['title']!,
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.black87,
-                                        ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            assignment['title']!,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.calendar_today,
+                                                size: 12,
+                                                color: Colors.grey[600],
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                assignment['dueDate']!,
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                  color: Colors.grey[600],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        assignment['dueDate']!,
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          color: Colors.grey[500],
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            }),
-                          ],
-                        ),
+                                );
+                              }).toList(),
+                            ],
+                          ),
                       ],
                     ),
                   ),
