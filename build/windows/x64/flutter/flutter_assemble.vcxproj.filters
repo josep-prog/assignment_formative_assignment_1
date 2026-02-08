@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\pc\Downloads\mateo\alu-web_front_end\assignment_formative_assignment_1\build\windows\x64\CMakeFiles\b8c8581fd1548582bece3dd1da0fed03\flutter_windows.dll.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\pc\Downloads\mateo\alu-web_front_end\assignment_formative_assignment_1\build\windows\x64\CMakeFiles\05c887889aef8d9b32df74d2d6616ffe\flutter_assemble.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\pc\Downloads\mateo\alu-web_front_end\assignment_formative_assignment_1\windows\flutter\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\pc\Downloads\mateo\alu-web_front_end\assignment_formative_assignment_1\build\windows\x64\flutter\CMakeFiles\flutter_assemble" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{A22CFFB1-5D74-382B-9FA4-82DE78916A22}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
