@@ -1,3 +1,5 @@
+// Schedule Screen - Created by code2811
+// Manages academic sessions, tracks attendance, and displays weekly schedule
 import 'package:flutter/material.dart';
 import '../models/session.dart';
 
